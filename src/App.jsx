@@ -1,19 +1,11 @@
 import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import axios from "axios";
+import ProductCard from "./components/ProductCard";
+import ProductDetail from "./components/ProductDetail";
 import "./App.css";
 
-function ProductCard({ product }) {
-  return (
-    <div className="product-card">
-      <img src={product.image} alt={product.title} />
-      <h2>{product.title}</h2>
-      <p className="price">${product.price}</p>
-      <p className="description">{product.description.substring(0, 100)}...</p>
-    </div>
-  );
-}
-
-function App() {
+function Home() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
 
@@ -43,6 +35,15 @@ function App() {
         </div>
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/product/:id" element={<ProductDetail />} />
+    </Routes>
   );
 }
 
