@@ -4,6 +4,176 @@ body {
   background-color: #f4f4f4;
 }
 
+/* Estilos para el Header */
+.header {
+  background-color: #333; /* Fondo oscuro para contraste con logo blanco */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  color: #fff;
+  width: 100%; /* Ocupa todo el ancho de la página */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__container {
+  max-width: 1200px; /* Igual que la grilla */
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1; /* Permite que el contenedor ocupe el espacio central */
+}
+
+.header__banner {
+  height: 100%; /* Igual a la altura del header */
+  position: absolute;
+  top: 0;
+  z-index: -1; /* Detrás del contenido */
+}
+
+.header__banner--left {
+  left: 0;
+  width: calc((100% - 1200px) / 2); /* Ocupa el espacio a la izquierda */
+  background: linear-gradient(to right, #555, transparent); /* Placeholder */
+}
+
+.header__banner--right {
+  right: 0;
+  width: calc((100% - 1200px) / 2); /* Ocupa el espacio a la derecha */
+  background: linear-gradient(to left, #555, transparent); /* Placeholder */
+}
+
+.header__logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.header__logo {
+  height: 40px;
+  object-fit: contain;
+}
+
+.header__logo-link span {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header__search {
+  position: relative;
+}
+
+.header__search-input {
+  padding: 8px 30px 8px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 200px;
+}
+
+.header__search-input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.header__search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  cursor: pointer; /* Indica que es clicable */
+  transition: color 0.2s;
+}
+
+.header__search-icon:hover {
+  color: #3498db; /* Efecto hover */
+}
+
+.header__categories {
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.header__categories:focus {
+  outline: none;
+}
+
+.header__account {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.header__account:hover {
+  color: #3498db;
+}
+
+/* Estilos para el Footer */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.footer__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer__copyright {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.footer__links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer__link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.2s;
+}
+
+.footer__link:hover {
+  color: #3498db;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -11,6 +181,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 20px;
 }
 
 h1 {
@@ -172,6 +343,12 @@ h1 {
   transform: translateY(-2px);
 }
 
+@media (max-width: 1200px) {
+  .header__banner {
+    display: none; /* Oculta los banners en pantallas menores a 1200px */
+  }
+}
+
 @media (max-width: 768px) {
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -193,6 +370,32 @@ h1 {
   .product-detail__price {
     font-size: 1.2em;
   }
+
+  .header__actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header__search-input {
+    width: 100%;
+  }
+
+  .header__categories {
+    width: 100%;
+  }
+
+  .header__logo {
+    height: 30px;
+  }
+
+  .header__logo-link span {
+    font-size: 1.2em;
+  }
+
+  .footer__links {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -202,5 +405,13 @@ h1 {
 
   .product-detail__image img {
     height: 200px;
+  }
+
+  .header__logo {
+    height: 25px;
+  }
+
+  .header__logo-link span {
+    font-size: 1em;
   }
 }
