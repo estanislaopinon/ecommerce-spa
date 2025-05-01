@@ -5,15 +5,78 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProductCard from "./components/ProductCard";
 import ProductDetail from "./components/ProductDetail";
+import FilterModal from "./components/FilterModal";
 import "./App.css";
 
-function Home() {
+function Home({
+  products,
+  filteredProducts,
+  error,
+  categories,
+  selectedCategories,
+  setSelectedCategories,
+  priceRange,
+  setPriceRange,
+  sortOrder,
+  setSortOrder,
+  isFilterModalOpen,
+  setIsFilterModalOpen,
+  applyFilters,
+}) {
+  return (
+    <div className="home-container">
+      <div className="products-container">
+        <div className="filter-button-container">
+          <button
+            className="filter-button"
+            onClick={() => setIsFilterModalOpen(true)}
+          >
+            Filtrar
+          </button>
+        </div>
+        <h1>Lista de Productos</h1>
+        {error ? (
+          <p className="error">{error}</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="error">No se encontraron productos.</p>
+        ) : (
+          <div className="products-grid">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        categories={categories}
+        selectedCategories={selectedCategories}
+        setSelectedCategories={setSelectedCategories}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        applyFilters={applyFilters}
+      />
+    </div>
+  );
+}
+
+function App() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeSearch, setActiveSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+  const [sortOrder, setSortOrder] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState({
+    categories: [],
+    priceRange: { min: "", max: "" },
+    sortOrder: "",
+  });
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [error, setError] = useState(null);
 
   // Cargar productos y categorías
@@ -36,82 +99,126 @@ function Home() {
     fetchData();
   }, []);
 
-  // Filtrar productos por búsqueda y categoría
+  // Filtrar y ordenar productos
   useEffect(() => {
     let filtered = products;
 
-    // Aplicar filtro de búsqueda si existe
-    if (activeSearch) {
+    // Aplicar filtro de búsqueda (en tiempo real)
+    if (searchTerm) {
       filtered = filtered.filter((product) =>
-        product.title.toLowerCase().includes(activeSearch.toLowerCase())
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
       console.log(
         "Búsqueda activa:",
-        activeSearch,
+        searchTerm,
         "Productos filtrados:",
         filtered
       );
     }
 
-    // Aplicar filtro de categoría solo si no es "Todas"
-    if (selectedCategory !== "") {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
+    // Aplicar filtros de la modal (solo cuando se hace clic en "Aplicar")
+    if (appliedFilters.categories.length > 0) {
+      filtered = filtered.filter((product) =>
+        appliedFilters.categories.includes(product.category)
       );
       console.log(
-        "Categoría seleccionada:",
-        selectedCategory,
+        "Categorías aplicadas:",
+        appliedFilters.categories,
         "Productos filtrados:",
+        filtered
+      );
+    }
+
+    if (appliedFilters.priceRange.min !== "") {
+      filtered = filtered.filter(
+        (product) => product.price >= Number(appliedFilters.priceRange.min)
+      );
+      console.log(
+        "Precio mínimo aplicado:",
+        appliedFilters.priceRange.min,
+        "Productos filtrados:",
+        filtered
+      );
+    }
+
+    if (appliedFilters.priceRange.max !== "") {
+      filtered = filtered.filter(
+        (product) => product.price <= Number(appliedFilters.priceRange.max)
+      );
+      console.log(
+        "Precio máximo aplicado:",
+        appliedFilters.priceRange.max,
+        "Productos filtrados:",
+        filtered
+      );
+    }
+
+    // Aplicar ordenamiento
+    if (appliedFilters.sortOrder) {
+      filtered = [...filtered].sort((a, b) => {
+        if (appliedFilters.sortOrder === "asc") {
+          return a.price - b.price;
+        } else {
+          return b.price - a.price;
+        }
+      });
+      console.log(
+        "Orden aplicado:",
+        appliedFilters.sortOrder,
+        "Productos ordenados:",
         filtered
       );
     }
 
     setFilteredProducts(filtered);
     console.log("Estado final de filteredProducts:", filtered);
-  }, [activeSearch, selectedCategory, products]);
-
-  const handleSearch = (term) => {
-    setActiveSearch(term);
-  };
+  }, [searchTerm, appliedFilters, products]);
 
   const handleSearchTermChange = (term) => {
     setSearchTerm(term);
   };
 
-  const handleCategoryChange = (category) => {
-    console.log("Cambiando a categoría:", category);
-    setSelectedCategory(category);
+  const applyFilters = () => {
+    setAppliedFilters({
+      categories: selectedCategories,
+      priceRange: { min: priceRange.min, max: priceRange.max },
+      sortOrder: sortOrder,
+    });
+    setIsFilterModalOpen(false);
+    console.log("Filtros aplicados:", {
+      selectedCategories,
+      priceRange,
+      sortOrder,
+    });
   };
 
   return (
-    <div className="container">
+    <div className="app">
       <Header
-        categories={categories}
-        onSearch={handleSearch}
-        onCategoryChange={handleCategoryChange}
-        selectedCategory={selectedCategory}
         searchTerm={searchTerm}
         onSearchTermChange={handleSearchTermChange}
       />
-      <h1>Lista de Productos</h1>
-      {error ? (
-        <p className="error">{error}</p>
-      ) : (
-        <div className="products-grid">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function App() {
-  return (
-    <div className="app">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Home
+              products={products}
+              filteredProducts={filteredProducts}
+              error={error}
+              categories={categories}
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              isFilterModalOpen={isFilterModalOpen}
+              setIsFilterModalOpen={setIsFilterModalOpen}
+              applyFilters={applyFilters}
+            />
+          }
+        />
         <Route path="/product/:id" element={<ProductDetail />} />
       </Routes>
       <Footer />

@@ -31,9 +31,6 @@ function ProductDetail() {
 
   return (
     <div className="product-detail">
-      <Link to="/" className="back-button">
-        Volver a la lista
-      </Link>
       <div className="product-detail__image">
         <img src={product.image} alt={product.title} />
       </div>

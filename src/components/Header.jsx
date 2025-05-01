@@ -1,24 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/logo blanco.png";
 
-function Header({
-  categories,
-  onSearch,
-  onCategoryChange,
-  selectedCategory,
-  searchTerm,
-  onSearchTermChange,
-}) {
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      onSearch(searchTerm);
-    }
-  };
-
-  const handleSearchClick = () => {
-    onSearch(searchTerm);
-  };
+function Header({ searchTerm, onSearchTermChange }) {
+  const location = useLocation();
+  const isProductDetail = location.pathname.startsWith("/product/");
 
   return (
     <header className="header">
@@ -29,36 +15,17 @@ function Header({
           <span>Look&Tech</span>
         </Link>
         <div className="header__actions">
-          <div className="header__search">
-            <input
-              type="text"
-              placeholder="Buscar productos..."
-              value={searchTerm}
-              onChange={(e) => onSearchTermChange(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="header__search-input"
-            />
-            <span
-              className="header__search-icon"
-              onClick={handleSearchClick}
-              role="button"
-              tabIndex={0}
-            >
-              🔍
-            </span>
-          </div>
-          <select
-            value={selectedCategory}
-            onChange={(e) => onCategoryChange(e.target.value)}
-            className="header__categories"
-          >
-            <option value="">Todas</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </option>
-            ))}
-          </select>
+          {!isProductDetail && (
+            <div className="header__search">
+              <input
+                type="text"
+                placeholder="Buscar productos..."
+                value={searchTerm}
+                onChange={(e) => onSearchTermChange(e.target.value)}
+                className="header__search-input"
+              />
+            </div>
+          )}
           <Link to="/account" className="header__account">
             <span>👤</span>
             <span>Cuenta</span>
