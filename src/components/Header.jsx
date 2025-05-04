@@ -1,37 +1,32 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import logo from "../assets/logo blanco.png";
 
-function Header({ searchTerm, onSearchTermChange }) {
-  const location = useLocation();
-  const isProductDetail = location.pathname.startsWith("/product/");
-
+function Header({ searchTerm, onSearchTermChange, balance }) {
   return (
     <header className="header">
-      <div className="header__banner header__banner--left"></div>
       <div className="header__container">
-        <Link to="/" className="header__logo-link">
-          <img src={logo} alt="Look&Tech" className="header__logo" />
+        <a href="/" className="header__logo-link">
+          <img src="/logo.png" alt="Look&Tech Logo" className="header__logo" />
           <span>Look&Tech</span>
-        </Link>
+        </a>
         <div className="header__actions">
-          {!isProductDetail && (
-            <div className="header__search">
-              <input
-                type="text"
-                placeholder="Buscar productos..."
-                value={searchTerm}
-                onChange={(e) => onSearchTermChange(e.target.value)}
-                className="header__search-input"
-              />
-            </div>
-          )}
-          <Link to="/account" className="header__account">
-            <span>👤</span>
-            <span>Cuenta</span>
-          </Link>
+          <div className="header__search">
+            <input
+              type="text"
+              className="header__search-input"
+              placeholder="Buscar productos..."
+              value={searchTerm}
+              onChange={(e) => onSearchTermChange(e.target.value)}
+            />
+          </div>
+          <div className="header__user">
+            <span>Juan Pérez</span>
+            <span className="header__balance">
+              Saldo: ${balance.toFixed(2)}
+            </span>
+          </div>
         </div>
       </div>
+      <div className="header__banner header__banner--left"></div>
       <div className="header__banner header__banner--right"></div>
     </header>
   );

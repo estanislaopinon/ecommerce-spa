@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -25,16 +25,16 @@ function Home({
 }) {
   return (
     <div className="home-container">
-      <div className="products-container">
-        <div className="filter-button-container">
-          <button
-            className="filter-button"
-            onClick={() => setIsFilterModalOpen(true)}
-          >
-            Filtrar
-          </button>
-        </div>
+      <div className="control-bar">
         <h1>Lista de Productos</h1>
+        <button
+          className="filter-button"
+          onClick={() => setIsFilterModalOpen(true)}
+        >
+          Filtrar
+        </button>
+      </div>
+      <div className="products-container">
         {error ? (
           <p className="error">{error}</p>
         ) : filteredProducts.length === 0 ? (
@@ -78,8 +78,10 @@ function App() {
   });
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [error, setError] = useState(null);
+  const [stocks, setStocks] = useState({});
+  const [balance, setBalance] = useState(500);
+  const location = useLocation();
 
-  // Cargar productos y categorías
   useEffect(() => {
     async function fetchData() {
       try {
@@ -90,7 +92,11 @@ function App() {
         setProducts(productsResponse.data);
         setFilteredProducts(productsResponse.data);
         setCategories(categoriesResponse.data);
-        console.log("Categorías cargadas:", categoriesResponse.data);
+        const initialStocks = productsResponse.data.reduce((acc, product) => {
+          acc[product.id] = 50;
+          return acc;
+        }, {});
+        setStocks(initialStocks);
       } catch (err) {
         setError("Error al cargar los datos. Intenta de nuevo más tarde.");
         console.error(err);
@@ -99,33 +105,18 @@ function App() {
     fetchData();
   }, []);
 
-  // Filtrar y ordenar productos
   useEffect(() => {
     let filtered = products;
 
-    // Aplicar filtro de búsqueda (en tiempo real)
     if (searchTerm) {
       filtered = filtered.filter((product) =>
         product.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      console.log(
-        "Búsqueda activa:",
-        searchTerm,
-        "Productos filtrados:",
-        filtered
-      );
     }
 
-    // Aplicar filtros de la modal (solo cuando se hace clic en "Aplicar")
     if (appliedFilters.categories.length > 0) {
       filtered = filtered.filter((product) =>
         appliedFilters.categories.includes(product.category)
-      );
-      console.log(
-        "Categorías aplicadas:",
-        appliedFilters.categories,
-        "Productos filtrados:",
-        filtered
       );
     }
 
@@ -133,27 +124,14 @@ function App() {
       filtered = filtered.filter(
         (product) => product.price >= Number(appliedFilters.priceRange.min)
       );
-      console.log(
-        "Precio mínimo aplicado:",
-        appliedFilters.priceRange.min,
-        "Productos filtrados:",
-        filtered
-      );
     }
 
     if (appliedFilters.priceRange.max !== "") {
       filtered = filtered.filter(
         (product) => product.price <= Number(appliedFilters.priceRange.max)
       );
-      console.log(
-        "Precio máximo aplicado:",
-        appliedFilters.priceRange.max,
-        "Productos filtrados:",
-        filtered
-      );
     }
 
-    // Aplicar ordenamiento
     if (appliedFilters.sortOrder) {
       filtered = [...filtered].sort((a, b) => {
         if (appliedFilters.sortOrder === "asc") {
@@ -162,17 +140,21 @@ function App() {
           return b.price - a.price;
         }
       });
-      console.log(
-        "Orden aplicado:",
-        appliedFilters.sortOrder,
-        "Productos ordenados:",
-        filtered
-      );
     }
 
     setFilteredProducts(filtered);
-    console.log("Estado final de filteredProducts:", filtered);
   }, [searchTerm, appliedFilters, products]);
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      const resetStocks = products.reduce((acc, product) => {
+        acc[product.id] = 50;
+        return acc;
+      }, {});
+      setStocks(resetStocks);
+      setBalance(500);
+    }
+  }, [location.pathname, products]);
 
   const handleSearchTermChange = (term) => {
     setSearchTerm(term);
@@ -185,11 +167,17 @@ function App() {
       sortOrder: sortOrder,
     });
     setIsFilterModalOpen(false);
-    console.log("Filtros aplicados:", {
-      selectedCategories,
-      priceRange,
-      sortOrder,
+  };
+
+  const updateStock = (productId, quantity) => {
+    setStocks((prev) => {
+      const newStock = Math.max(0, prev[productId] - quantity);
+      return { ...prev, [productId]: newStock };
     });
+  };
+
+  const updateBalance = (cost) => {
+    setBalance((prev) => Math.max(0, prev - cost));
   };
 
   return (
@@ -197,6 +185,7 @@ function App() {
       <Header
         searchTerm={searchTerm}
         onSearchTermChange={handleSearchTermChange}
+        balance={balance}
       />
       <Routes>
         <Route
@@ -219,7 +208,17 @@ function App() {
             />
           }
         />
-        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route
+          path="/product/:id"
+          element={
+            <ProductDetail
+              stocks={stocks}
+              updateStock={updateStock}
+              balance={balance}
+              updateBalance={updateBalance}
+            />
+          }
+        />
       </Routes>
       <Footer />
     </div>

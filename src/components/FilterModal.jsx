@@ -14,28 +14,14 @@ function FilterModal({
 }) {
   if (!isOpen) return null;
 
-  const handleCategoryChange = (category) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(
-        selectedCategories.filter((cat) => cat !== category)
-      );
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
-  const handlePriceChange = (e) => {
-    const { name, value } = e.target;
-    setPriceRange((prev) => ({ ...prev, [name]: value }));
-  };
-
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>Filtros</h2>
         <button className="modal-close" onClick={onClose}>
-          ×
+          ✕
         </button>
+        <h2>Filtros</h2>
+
         <div className="filter-section">
           <h3>Categorías</h3>
           <div className="checkbox-group">
@@ -44,53 +30,62 @@ function FilterModal({
                 <input
                   type="checkbox"
                   checked={selectedCategories.includes(category)}
-                  onChange={() => handleCategoryChange(category)}
+                  onChange={() => {
+                    setSelectedCategories((prev) =>
+                      prev.includes(category)
+                        ? prev.filter((cat) => cat !== category)
+                        : [...prev, category]
+                    );
+                  }}
                 />
-                {category.charAt(0).toUpperCase() + category.slice(1)}
+                {category}
               </label>
             ))}
           </div>
         </div>
+
         <div className="filter-section">
-          <h3>Rango de Precio</h3>
+          <h3>Rango de Precios</h3>
           <div className="price-range">
             <input
               type="number"
-              name="min"
+              placeholder="Mín"
               value={priceRange.min}
-              onChange={handlePriceChange}
-              placeholder="Mínimo"
-              min="0"
+              onChange={(e) =>
+                setPriceRange({ ...priceRange, min: e.target.value })
+              }
             />
             <span>-</span>
             <input
               type="number"
-              name="max"
+              placeholder="Máx"
               value={priceRange.max}
-              onChange={handlePriceChange}
-              placeholder="Máximo"
-              min="0"
+              onChange={(e) =>
+                setPriceRange({ ...priceRange, max: e.target.value })
+              }
             />
           </div>
         </div>
+
         <div className="filter-section">
-          <h3>Ordenar por</h3>
+          <h3>Ordenar por Precio</h3>
           <select
+            className="sort-select"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="sort-select"
           >
-            <option value="">Sin orden</option>
-            <option value="asc">Precio: Menor a Mayor</option>
-            <option value="desc">Precio: Mayor a Menor</option>
+            <option value="">Seleccionar</option>
+            <option value="asc">Menor a Mayor</option>
+            <option value="desc">Mayor a Menor</option>
           </select>
         </div>
+
         <div className="modal-actions">
           <button className="apply-button" onClick={applyFilters}>
             Aplicar
           </button>
           <button className="cancel-button" onClick={onClose}>
-            Cerrar
+            Cancelar
           </button>
         </div>
       </div>
