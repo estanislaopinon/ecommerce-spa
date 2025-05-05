@@ -8,7 +8,7 @@ function Header({ searchTerm, onSearchTermChange, balance }) {
           <img src="/logo.png" alt="Look&Tech Logo" className="header__logo" />
           <span>Look&Tech</span>
         </a>
-        <div className="header__actions">
+        <div className="header__search-wrapper">
           <div className="header__search">
             <input
               type="text"
@@ -17,13 +17,12 @@ function Header({ searchTerm, onSearchTermChange, balance }) {
               value={searchTerm}
               onChange={(e) => onSearchTermChange(e.target.value)}
             />
+            <span className="header__search-icon">🔍</span>
           </div>
-          <div className="header__user">
-            <span>Juan Pérez</span>
-            <span className="header__balance">
-              Saldo: ${balance.toFixed(2)}
-            </span>
-          </div>
+        </div>
+        <div className="header__user">
+          <span>Juan Pérez</span>
+          <span className="header__balance">Saldo: ${balance.toFixed(2)}</span>
         </div>
       </div>
       <div className="header__banner header__banner--left"></div>

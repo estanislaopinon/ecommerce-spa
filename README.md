@@ -1,12 +1,11 @@
-# React + Vite
+# Look&Tech - Tienda Online
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descripción
 
-Currently, two official plugins are available:
+Look&Tech es una aplicación web desarrollada con React y Vite que simula una tienda online. Permite a los usuarios explorar productos, filtrarlos por categoría y precio, buscar productos específicos, y simular compras con un sistema de saldo y stock. La aplicación consume datos de la Fake Store API para mostrar productos reales.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Accede a la app:
 
-## Expanding the ESLint configuration
+Visita la app en vivo: https://lookytech.netlify.app/
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Cómo instalar para desarrollo local
