@@ -7,5 +7,3 @@ Look&Tech es una aplicación web desarrollada con React y Vite que simula una ti
 ## Accede a la app:
 
 Visita la app en vivo: https://lookytech.netlify.app/
-
-## Cómo instalar para desarrollo local
