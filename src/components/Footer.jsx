@@ -1,8 +1,7 @@
-// Importación de React y Link para navegación interna
+// Importación de React
 import React from "react";
-import { Link } from "react-router-dom";
 
-// Componente Footer: Muestra información de la tienda, ubicación, GitHub, derechos y enlace a Quiénes Somos
+// Componente Footer: Muestra nombre de la tienda, ubicación, GitHub y derechos reservados
 function Footer() {
   return (
     <footer className="footer">
